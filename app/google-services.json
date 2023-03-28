@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "155751411910",
+    "project_id": "zoomanagement-2a42a",
+    "storage_bucket": "zoomanagement-2a42a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155751411910:android:c0a645274e9c7ab110e7c7",
+        "android_client_info": {
+          "package_name": "com.example.zoomanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155751411910-rosm8aco010tahcigor31kq694vmod5d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtbhYuRNlLgmmMxo9BpQ9cXmSVp50gZIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155751411910-rosm8aco010tahcigor31kq694vmod5d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
