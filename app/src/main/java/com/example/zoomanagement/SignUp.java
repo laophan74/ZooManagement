@@ -61,6 +61,13 @@ public class SignUp extends AppCompatActivity {
                 }
             }
         });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignUp.this, LogIn.class));
+            }
+        });
     }
 
     private void UserSignUp(String email, String password) {
