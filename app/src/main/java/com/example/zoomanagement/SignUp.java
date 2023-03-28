@@ -14,14 +14,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.zoomanagement.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignUp extends AppCompatActivity {
     FirebaseAuth auth;
 
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private EditText userName;
     private EditText email;
     private EditText password;
@@ -57,7 +60,7 @@ public class SignUp extends AppCompatActivity {
                 } else if (!_password.equals(_rPassword)) {
                     Toast.makeText(SignUp.this, "Wrong password", Toast.LENGTH_SHORT).show();
                 } else {
-                    UserSignUp(_email, _password);
+                    UserSignUp(_email, _password, _userName);
                 }
             }
         });
@@ -70,11 +73,14 @@ public class SignUp extends AppCompatActivity {
         });
     }
 
-    private void UserSignUp(String email, String password) {
+    private void UserSignUp(String email, String password, String username) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
+                    User user = new User();
+                    user.ChangeDataUser(email, username,"null","null",true);
+                    db.collection("Users").document(email).set(user);
                     Toast.makeText(SignUp.this, "Success", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(SignUp.this, LogIn.class));
                 } else {
