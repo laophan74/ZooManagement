@@ -14,7 +14,6 @@ public class Main extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     HomeFragment homeFragment = new HomeFragment();
     ProfileFragment profileFragment = new ProfileFragment();
-    AllAnimalFragment allAnimalFragment = new AllAnimalFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
