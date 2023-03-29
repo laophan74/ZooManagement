@@ -7,6 +7,15 @@ public class Animal {
     private Float size;
     private Float weight;
     private String status;
+    private String document;
+
+    public String getDocument() {
+        return document;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
+    }
 
     public void SetDataAnimal(String name, String picture, String origin, Float size, Float weight, String status) {
         this.name = name;
@@ -17,14 +26,7 @@ public class Animal {
         this.status = status;
     }
 
-    public Animal() {
-        this.name = name;
-        this.picture = picture;
-        this.origin = origin;
-        this.size = size;
-        this.weight = weight;
-        this.status = status;
-    }
+    public Animal() {}
 
     public String getName() {
         return name;

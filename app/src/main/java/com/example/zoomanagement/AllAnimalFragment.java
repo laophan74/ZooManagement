@@ -1,7 +1,9 @@
 package com.example.zoomanagement;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -10,14 +12,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.zoomanagement.Adapter.AnimalAdapter;
 import com.example.zoomanagement.Model.Animal;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
 public class AllAnimalFragment extends Fragment {
+    public static String document;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private RelativeLayout add;
     private ListView listView;
@@ -38,10 +46,37 @@ public class AllAnimalFragment extends Fragment {
             public void onClick(View view) {
                 HomeFragment homeFragment = new HomeFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, homeFragment).commit();
-
             }
         });
 
+
+        GetAllAnimal();
+
         return v;
+    }
+
+    private void GetAllAnimal(){
+        db.collection("Animals").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot doc : task.getResult()){
+                                Animal animal = doc.toObject(Animal.class);
+                                animal.setDocument(doc.getId());
+                                lAnimal.add(animal);
+                            }
+                            animalAdapter = new AnimalAdapter(getActivity(), lAnimal);
+                            listView.setAdapter(animalAdapter);
+
+                        }
+                    }
+                });
+
+//        listView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            City city = lCity.get(i);
+//            document = city.getDocument();
+//            startActivity(new Intent(AllCity.this, EditCity.class));
+//        });
     }
 }

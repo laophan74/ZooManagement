@@ -17,7 +17,7 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/animalImage"
                 android:layout_width="100dp"
-                android:layout_height="match_parent"
+                android:layout_height="135dp"
                 android:layout_centerInParent="true"
                 android:paddingLeft="10dp"
                 android:src="@drawable/fb"

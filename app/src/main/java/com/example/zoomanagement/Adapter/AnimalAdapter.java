@@ -22,17 +22,17 @@ public class AnimalAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return animals.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return null;
+        return animals.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
@@ -52,6 +52,8 @@ public class AnimalAdapter extends BaseAdapter {
         cname.setText(animal.getName());
         origin.setText("Origin: "+animal.getOrigin());
         size.setText("Size: "+animal.getSize().toString());
+        weight.setText("Weight: "+animal.getWeight().toString());
+        status.setText("Status: "+animal.getStatus());
 
         return view;
     }
