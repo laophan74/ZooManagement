@@ -49,7 +49,13 @@ public class AllAnimalFragment extends Fragment {
             }
         });
 
-
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddAnimalFragment addAnimalFragment = new AddAnimalFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, addAnimalFragment).commit();
+            }
+        });
         GetAllAnimal();
 
         return v;
@@ -74,9 +80,10 @@ public class AllAnimalFragment extends Fragment {
                 });
 
 //        listView.setOnItemClickListener((adapterView, view, i, l) -> {
-//            City city = lCity.get(i);
-//            document = city.getDocument();
-//            startActivity(new Intent(AllCity.this, EditCity.class));
+//            Animal animal = lAnimal.get(i);
+//            document = animal.getDocument();
+//            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
+//
 //        });
     }
 }

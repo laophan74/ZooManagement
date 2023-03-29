@@ -1,5 +1,6 @@
 package com.example.zoomanagement;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,58 +8,82 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddAnimalFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class AddAnimalFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AddAnimalFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddAnimalFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AddAnimalFragment newInstance(String param1, String param2) {
-        AddAnimalFragment fragment = new AddAnimalFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private EditText name;
+    private EditText origin;
+    private EditText size;
+    private EditText weight;
+    private EditText status;
+    private Button add;
+    private ImageView back;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_animal, container, false);
+        View v = inflater.inflate(R.layout.fragment_add_animal, container, false);
+        name = v.findViewById(R.id.name);
+        origin = v.findViewById(R.id.origin);
+        size = v.findViewById(R.id.size);
+        weight = v.findViewById(R.id.weight);
+        status = v.findViewById(R.id.status);
+        add = v.findViewById(R.id.addBtn);
+        back = v.findViewById(R.id.backPress);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AllAnimalFragment allAnimalFragment = new AllAnimalFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addBtn();
+            }
+        });
+
+        return v;
+    }
+
+    private void addBtn() {
+        String Name = name.getText().toString();
+        String Origin = origin.getText().toString();
+        String Size = size.getText().toString();
+        String Weight = weight.getText().toString();
+        String Status = status.getText().toString();
+
+        Map<String, Object> docData = new HashMap<>();
+        docData.put("name", Name);
+        docData.put("origin", Origin);
+        docData.put("size", Integer.parseInt(Size));
+        docData.put("weight", Integer.parseInt(Weight));
+        docData.put("status", Status);
+        docData.put("picture", "null");
+
+
+        db.collection("Animals").document()
+                .set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
+                        AllAnimalFragment allAnimalFragment = new AllAnimalFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
+                    }
+                });
     }
 }
