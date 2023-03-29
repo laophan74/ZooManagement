@@ -79,11 +79,11 @@ public class AllAnimalFragment extends Fragment {
                     }
                 });
 
-//        listView.setOnItemClickListener((adapterView, view, i, l) -> {
-//            Animal animal = lAnimal.get(i);
-//            document = animal.getDocument();
-//            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
-//
-//        });
+        listView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Animal animal = lAnimal.get(i);
+            document = animal.getDocument();
+            EditAnimalFragment editAnimalFragment = new EditAnimalFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, editAnimalFragment).commit();
+        });
     }
 }

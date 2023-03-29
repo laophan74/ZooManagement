@@ -1,64 +1,154 @@
 package com.example.zoomanagement;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditAnimalFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.example.zoomanagement.Model.Animal;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class EditAnimalFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public EditAnimalFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditAnimalFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditAnimalFragment newInstance(String param1, String param2) {
-        EditAnimalFragment fragment = new EditAnimalFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private EditText name;
+    private EditText size;
+    private EditText weight;
+    private EditText origin;
+    private EditText status;
+    private Animal animal;
+    private Button editBtn;
+    private ImageView back;
+    private RelativeLayout delete;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_animal, container, false);
+        View v = inflater.inflate(R.layout.fragment_edit_animal, container, false);
+        editBtn = v.findViewById(R.id.editBtn);
+        delete = v.findViewById(R.id.delete);
+        back = v.findViewById(R.id.backPress);
+
+        name = v.findViewById(R.id.name);
+        size = v.findViewById(R.id.size);
+        weight = v.findViewById(R.id.weight);
+        origin = v.findViewById(R.id.origin);
+        status = v.findViewById(R.id.status);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AllAnimalFragment allAnimalFragment = new AllAnimalFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Delete();
+            }
+        });
+
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditBtnClick();
+            }
+        });
+        Load();
+        return v;
+    }
+
+    private void Delete() {
+        AlertDialog.Builder altd = new AlertDialog.Builder(getActivity());
+        altd.setMessage("Do you want to delete this?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        db.collection("Animals").document(AllAnimalFragment.document)
+                                .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                                        AllAnimalFragment allAnimalFragment = new AllAnimalFragment();
+                                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
+                                    }
+                                });
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+
+        AlertDialog alert = altd.create();
+        alert.setTitle("Warning!!!");
+        alert.show();
+    }
+
+    private void EditBtnClick() {
+        String Name = name.getText().toString();
+        String Origin = origin.getText().toString();
+        String Size = size.getText().toString();
+        String Weight = weight.getText().toString();
+        String Status = status.getText().toString();
+
+        Map<String, Object> docData = new HashMap<>();
+        docData.put("name", Name);
+        docData.put("origin", Origin);
+        docData.put("size", Integer.parseInt(Size));
+        docData.put("weight", Integer.parseInt(Weight));
+        docData.put("status", Status);
+//        docData.put("picture", "null");
+
+        db.collection("Animals").document(AllAnimalFragment.document)
+                .set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
+//                        AllAnimalFragment allAnimalFragment = new AllAnimalFragment();
+//                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
+                    }
+                });
+    }
+
+    private void Load() {
+        db.collection("Animals").document(AllAnimalFragment.document)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot doc = task.getResult();
+                            animal = doc.toObject(Animal.class);
+                            name.setText(animal.getName());
+                            origin.setText(animal.getOrigin());
+                            weight.setText(String.valueOf(animal.getWeight()));
+                            size.setText(String.valueOf(animal.getSize()));
+                            status.setText(animal.getStatus());
+
+                        }
+                    }
+                });
     }
 }
