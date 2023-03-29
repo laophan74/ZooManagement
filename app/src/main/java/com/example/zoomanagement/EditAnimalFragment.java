@@ -117,18 +117,18 @@ public class EditAnimalFragment extends Fragment {
         Map<String, Object> docData = new HashMap<>();
         docData.put("name", Name);
         docData.put("origin", Origin);
-        docData.put("size", Integer.parseInt(Size));
-        docData.put("weight", Integer.parseInt(Weight));
+        docData.put("size", Float.parseFloat(Size));
+        docData.put("weight", Float.parseFloat(Weight));
         docData.put("status", Status);
-//        docData.put("picture", "null");
+        docData.put("picture", "null");
 
         db.collection("Animals").document(AllAnimalFragment.document)
                 .set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
-//                        AllAnimalFragment allAnimalFragment = new AllAnimalFragment();
-//                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
+                        AllAnimalFragment allAnimalFragment = new AllAnimalFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
                     }
                 });
     }

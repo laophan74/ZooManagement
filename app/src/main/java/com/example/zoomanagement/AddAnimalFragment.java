@@ -70,8 +70,8 @@ public class AddAnimalFragment extends Fragment {
         Map<String, Object> docData = new HashMap<>();
         docData.put("name", Name);
         docData.put("origin", Origin);
-        docData.put("size", Integer.parseInt(Size));
-        docData.put("weight", Integer.parseInt(Weight));
+        docData.put("size", Float.parseFloat(Size));
+        docData.put("weight", Float.parseFloat(Weight));
         docData.put("status", Status);
         docData.put("picture", "null");
 
