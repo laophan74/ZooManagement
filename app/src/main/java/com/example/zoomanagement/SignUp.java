@@ -79,7 +79,7 @@ public class SignUp extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     User user = new User();
-                    user.ChangeDataUser(email, username,"null","null",true);
+                    user.changeDataUser(email, username,"null","null","Admin","null","null");
                     db.collection("Users").document(email).set(user);
                     Toast.makeText(SignUp.this, "Success", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(SignUp.this, LogIn.class));

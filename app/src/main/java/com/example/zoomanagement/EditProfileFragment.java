@@ -1,7 +1,5 @@
 package com.example.zoomanagement;
 
-import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,52 +11,53 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.zoomanagement.Model.Animal;
 import com.example.zoomanagement.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class ProfileFragment extends Fragment {
+import java.util.HashMap;
+import java.util.Map;
+
+public class EditProfileFragment extends Fragment {
     private FirebaseAuth Auth;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private TextView userName;
-    private TextView gender;
-    private TextView birth;
-    private TextView role;
-    private TextView email;
-    private TextView phone;
-    private TextView address;
+    private EditText dmm;
+    private EditText birth;
+    private EditText address;
+    private EditText phone;
+    private EditText gender;
     private Button editBtn;
+    private ImageView back;
     private User user;
-    private ImageView logout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        editBtn = v.findViewById(R.id.btnEdit);
-        userName = v.findViewById(R.id.username);
+        View v = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        dmm = v.findViewById(R.id.dcmm);
         gender = v.findViewById(R.id.gender);
         birth = v.findViewById(R.id.birth);
-        role = v.findViewById(R.id.role);
-        email = v.findViewById(R.id.email);
         phone = v.findViewById(R.id.phone);
         address = v.findViewById(R.id.address);
         Auth = FirebaseAuth.getInstance();
-        logout = v.findViewById(R.id.logout);
+        editBtn = v.findViewById(R.id.btnEdit);
+        back = v.findViewById(R.id.backPress);
 
-        logout.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                logOut();
+                ProfileFragment profileFragment = new ProfileFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, profileFragment).commit();
             }
         });
+
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,17 +65,36 @@ public class ProfileFragment extends Fragment {
             }
         });
         Load();
-        return v;
-    }
 
-    private void logOut() {
-        Auth.signOut();
-        startActivity(new Intent(getActivity(), LogIn.class));
+        return  v;
     }
 
     private void EditBtnClick() {
-        EditProfileFragment editProfileFragment = new EditProfileFragment();
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, editProfileFragment).commit();
+        FirebaseUser currentUser = Auth.getCurrentUser();
+        String Name = dmm.getText().toString();
+        String Gender = gender.getText().toString();
+        String Birth = birth.getText().toString();
+        String Phone = phone.getText().toString();
+        String Address = address.getText().toString();
+
+        Map<String, Object> docData = new HashMap<>();
+        docData.put("userName", Name);
+        docData.put("gender", Gender);
+        docData.put("birth", Birth);
+        docData.put("email", currentUser.getEmail());
+        docData.put("phone", Phone);
+        docData.put("address", Address);
+        docData.put("role", "Admin");
+
+        db.collection("Users").document(currentUser.getEmail())
+                .set(docData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
+                        ProfileFragment profileFragment = new ProfileFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, profileFragment).commit();
+                    }
+                });
     }
 
     private void Load() {
@@ -88,12 +106,10 @@ public class ProfileFragment extends Fragment {
                         if(task.isSuccessful()){
                             DocumentSnapshot doc = task.getResult();
                             user = doc.toObject(User.class);
-                            userName.setText(user.getUserName());
-                            email.setText(user.getEmail());
+                            dmm.setText(user.getUserName());
                             address.setText(user.getAddress());
                             birth.setText(user.getBirth());
                             gender.setText(user.getGender());
-                            role.setText(user.getRole());
                             phone.setText(user.getPhone());
                         }
                     }
