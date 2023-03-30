@@ -8,6 +8,7 @@ public class Animal {
     private Float weight;
     private String status;
     private String document;
+    private String Staff;
 
     public String getDocument() {
         return document;
@@ -74,5 +75,13 @@ public class Animal {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStaff() {
+        return Staff;
+    }
+
+    public void setStaff(String staff) {
+        Staff = staff;
     }
 }

@@ -46,6 +46,7 @@ public class AnimalAdapter extends BaseAdapter {
         TextView size = view.findViewById(R.id.size);
         TextView weight = view.findViewById(R.id.weight);
         TextView status = view.findViewById(R.id.status);
+        TextView staff = view.findViewById(R.id.staff);
 
         Animal animal = animals.get(i);
 
@@ -54,7 +55,7 @@ public class AnimalAdapter extends BaseAdapter {
         size.setText("Size: "+animal.getSize().toString());
         weight.setText("Weight: "+animal.getWeight().toString());
         status.setText("Status: "+animal.getStatus());
-
+        staff.setText("Staff: "+animal.getStaff());
         return view;
     }
 }
