@@ -9,6 +9,15 @@ public class User {
     private String role;
     private String phone;
     private String gender;
+    private String document;
+
+    public String getDocument() {
+        return document;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
+    }
 
     public String getRole() {
         return role;

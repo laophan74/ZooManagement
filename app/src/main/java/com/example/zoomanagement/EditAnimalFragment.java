@@ -11,21 +11,28 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.zoomanagement.Model.Animal;
+import com.example.zoomanagement.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class EditAnimalFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -38,7 +45,10 @@ public class EditAnimalFragment extends Fragment {
     private Button editBtn;
     private ImageView back;
     private RelativeLayout delete;
-
+    private User staffName;
+    private Spinner staff;
+    private ArrayList<User> lUser = new ArrayList<>();
+    private ArrayList<String> lDist1 = new ArrayList<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,6 +63,7 @@ public class EditAnimalFragment extends Fragment {
         weight = v.findViewById(R.id.weight);
         origin = v.findViewById(R.id.origin);
         status = v.findViewById(R.id.status);
+        staff = v.findViewById(R.id.staff);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +86,7 @@ public class EditAnimalFragment extends Fragment {
             }
         });
         Load();
+        loadStaff();
         return v;
     }
 
@@ -113,6 +125,7 @@ public class EditAnimalFragment extends Fragment {
         String Size = size.getText().toString();
         String Weight = weight.getText().toString();
         String Status = status.getText().toString();
+        String Staff = staffName.getEmail();
 
         Map<String, Object> docData = new HashMap<>();
         docData.put("name", Name);
@@ -120,6 +133,7 @@ public class EditAnimalFragment extends Fragment {
         docData.put("size", Float.parseFloat(Size));
         docData.put("weight", Float.parseFloat(Weight));
         docData.put("status", Status);
+        docData.put("staff", Staff);
         docData.put("picture", "null");
 
         db.collection("Animals").document(AllAnimalFragment.document)
@@ -150,5 +164,39 @@ public class EditAnimalFragment extends Fragment {
                         }
                     }
                 });
+    }
+    private void loadStaff() {
+        db.collection("Users").get()
+                .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot doc : task.getResult()) {
+                                    User user = doc.toObject(User.class);
+                                    lUser.add(user);
+                                }
+                                for (User item : lUser) {
+                                    lDist1.add(item.getUserName());
+                                }
+                                ArrayAdapter<String> aaC1 = new ArrayAdapter<>(getActivity(),
+                                        android.R.layout.simple_spinner_dropdown_item, lDist1);
+                                staff.setAdapter(aaC1);
+                                staff.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                        staffName = ReturnUser(staff.getSelectedItem().toString());
+                                    }
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> adapterView) {
+                                    }
+                                });
+
+                            }
+                        }
+                );
+    }
+    private User ReturnUser(String x) {
+        for (User item : lUser) {
+            if (Objects.equals(x, item.getUserName())) return item;
+        }
+        return null;
     }
 }
