@@ -12,8 +12,10 @@ import android.widget.Toast;
 
 public class HomeFragment extends Fragment {
     private CardView animal;
+    private CardView export;
     private CardView user;
     AllAnimalFragment allAnimalFragment = new AllAnimalFragment();
+    AllExportFragment allExportFragment = new AllExportFragment();
     AllAccountFragment allAccountFragment = new AllAccountFragment();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -22,12 +24,19 @@ public class HomeFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
         animal =(CardView) v.findViewById(R.id.animal);
+        export =(CardView) v.findViewById(R.id.export);
         user =(CardView) v.findViewById(R.id.account);
 
         animal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allAnimalFragment).commit();
+            }
+        });
+        export.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allExportFragment).commit();
             }
         });
         user.setOnClickListener(new View.OnClickListener() {

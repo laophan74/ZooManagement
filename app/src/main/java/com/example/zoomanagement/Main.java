@@ -13,6 +13,7 @@ import com.google.android.material.navigation.NavigationBarView;
 public class Main extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     HomeFragment homeFragment = new HomeFragment();
+    ChartFragment chartFragment = new ChartFragment();
     ProfileFragment profileFragment = new ProfileFragment();
 
     @Override
@@ -31,6 +32,9 @@ public class Main extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.home:
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, homeFragment).commit();
+                        return  true;
+                    case R.id.chart:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, chartFragment).commit();
                         return  true;
                     case R.id.profile:
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, profileFragment).commit();
